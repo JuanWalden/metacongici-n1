@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrenador de Postura Cognitiva</title>
+  <style>
+    /* Estilos básicos y adaptados para móviles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      width: 90%;
+      max-width: 600px;
+      margin: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    .scenario, .feedback, .observation {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .scenario {
+      background: #e8f0fe;
+      border-left: 5px solid #4285F4;
+    }
+    .feedback {
+      background: #e9f7ef;
+      border-left: 5px solid #28a745;
+    }
+    .observation {
+      background: #fff3cd;
+      border-left: 5px solid #ffc107;
+    }
+    .options button, .next-btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 1em;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .options button:hover, .next-btn:hover {
+      background-color: #0056b3;
+    }
+    .options button:active {
+      background-color: #004080;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Entrenador de Postura Cognitiva</h1>
+    <div id="app">
+      <!-- Aquí se cargará el contenido dinámico -->
+    </div>
+  </div>
+
+  <script>
+    // Array de escenarios con sus opciones, feedback y actividad de auto-observación
+    const scenarios = [
+      {
+        scenario: "Te encuentras en una reunión de trabajo y sientes que tus compañeros no están de acuerdo con tu idea. Un pensamiento surge: 'Seguro que me juzgarán negativamente'.",
+        options: [
+          {
+            text: "Aceptar el pensamiento y retirarse del debate.",
+            feedback: "Esta respuesta puede reforzar la creencia de que tus ideas no son válidas, lo que favorece la rumiación y la evitación de situaciones importantes."
+          },
+          {
+            text: "Observar el pensamiento sin juzgarlo y continuar participando.",
+            feedback: "¡Excelente elección! Al observar el pensamiento sin juzgarlo, te conviertes en un observador de tus procesos mentales, lo que reduce la intensidad emocional."
+          },
+          {
+            text: "Cambiar de tema inmediatamente para evitar la discusión.",
+            feedback: "Esta opción evita el conflicto, pero no te ayuda a diferenciar entre pensamientos y realidades, perpetuando la incertidumbre."
+          }
+        ],
+        observation: "Esta semana, cada vez que notes un pensamiento repetitivo en situaciones laborales, intenta describirlo mentalmente sin involucrarte emocionalmente."
+      },
+      {
+        scenario: "En casa, al ver a tus hijos jugar, sientes que no estás haciendo lo suficiente como padre. Piensas: 'No soy un buen padre y nunca lo seré'.",
+        options: [
+          {
+            text: "Creer el pensamiento y sentirte culpable.",
+            feedback: "Aceptar el pensamiento sin cuestionarlo puede intensificar la culpa y la preocupación, afectando negativamente tu bienestar emocional."
+          },
+          {
+            text: "Notar el pensamiento y reconocer que es solo una interpretación, no la realidad.",
+            feedback: "Muy bien. Reconocer que se trata de una interpretación te ayuda a adoptar una postura de observador y a reducir la carga emocional."
+          },
+          {
+            text: "Intentar convencerte de que eres perfecto, ignorando el pensamiento.",
+            feedback: "La negación puede funcionar momentáneamente, pero no te permite analizar la veracidad del pensamiento, lo que puede generar conflictos internos a futuro."
+          }
+        ],
+        observation: "Durante la próxima semana, cuando surja un pensamiento negativo sobre ti mismo, escríbelo y analiza si se trata de una interpretación o de una realidad objetiva."
+      }
+    ];
+
+    let currentScenario = 0;
+
+    // Función para cargar un escenario basado en su índice
+    function loadScenario(index) {
+      const appDiv = document.getElementById('app');
+      // Si ya se completaron todos los escenarios, mostramos un mensaje final
+      if (index >= scenarios.length) {
+        appDiv.innerHTML = `<h2>¡Has completado todas las simulaciones!</h2>
+                            <p>Recuerda seguir practicando la auto-observación y la postura de observador en tu día a día.</p>`;
+        return;
+      }
+      
+      const scenarioData = scenarios[index];
+      let html = `<div class="scenario">
+                    <p>${scenarioData.scenario}</p>
+                  </div>
+                  <div class="options">`;
+      scenarioData.options.forEach((option, idx) => {
+        html += `<button onclick="selectOption(${index}, ${idx})">${option.text}</button>`;
+      });
+      html += `</div>`;
+      
+      appDiv.innerHTML = html;
+    }
+
+    // Función que se ejecuta al seleccionar una opción
+    function selectOption(scenarioIndex, optionIndex) {
+      const appDiv = document.getElementById('app');
+      const scenarioData = scenarios[scenarioIndex];
+      const option = scenarioData.options[optionIndex];
+      
+      let html = `<div class="feedback">
+                    <strong>Feedback:</strong>
+                    <p>${option.feedback}</p>
+                  </div>
+                  <div class="observation">
+                    <strong>Actividad de auto-observación:</strong>
+                    <p>${scenarioData.observation}</p>
+                  </div>
+                  <button class="next-btn" onclick="nextScenario()">Siguiente</button>`;
+      appDiv.innerHTML = html;
+    }
+
+    // Función para avanzar al siguiente escenario
+    function nextScenario() {
+      currentScenario++;
+      loadScenario(currentScenario);
+    }
+
+    // Iniciar la aplicación una vez que el DOM se haya cargado
+    document.addEventListener('DOMContentLoaded', function() {
+      loadScenario(currentScenario);
+    });
+  </script>
+</body>
+</html>
